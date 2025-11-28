@@ -1,0 +1,113 @@
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 10
+
+typedef struct {
+    char nome[30];
+    char tipo[30];
+    int quantidade;
+} Item;
+
+void buscarItem(Item mochila[], int total) {
+    char nome[30];
+    printf("Digite o nome do item para buscar: ");
+    fgets(nome, 30, stdin);
+    nome[strcspn(nome, "\n")] = 0;
+
+    int found = 0;
+
+    for (int i = 0; i < total; i++) {
+        if (strcmp(mochila[i].nome, nome) == 0) {
+            printf("\nItem encontrado:\n");
+            printf("Nome: %s\nTipo: %s\nQuantidade: %d\n",
+                   mochila[i].nome, mochila[i].tipo, mochila[i].quantidade);
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found)
+        printf("Item não encontrado!\n");
+}
+
+int main() {
+    Item mochila[MAX];
+    int total = 0;
+    int opcao;
+
+    do {
+        printf("\n=== MOCHILA – NÍVEL AVENTUREIRO ===\n");
+        printf("1 - Adicionar item\n");
+        printf("2 - Remover item\n");
+        printf("3 - Listar itens\n");
+        printf("4 - Buscar item por nome\n");
+        printf("0 - Sair\n");
+        printf("Escolha: ");
+        scanf("%d", &opcao);
+        getchar();
+
+        if (opcao == 1) {
+            if (total >= MAX) {
+                printf("Mochila cheia!\n");
+            } else {
+                printf("Nome: ");
+                fgets(mochila[total].nome, 30, stdin);
+                mochila[total].nome[strcspn(mochila[total].nome, "\n")] = 0;
+
+                printf("Tipo: ");
+                fgets(mochila[total].tipo, 30, stdin);
+                mochila[total].tipo[strcspn(mochila[total].tipo, "\n")] = 0;
+
+                printf("Quantidade: ");
+                scanf("%d", &mochila[total].quantidade);
+                getchar();
+
+                total++;
+                printf("Item adicionado!\n");
+            }
+        }
+
+        else if (opcao == 2) {
+            char nome[30];
+            printf("Digite o nome do item para remover: ");
+            fgets(nome, 30, stdin);
+            nome[strcspn(nome, "\n")] = 0;
+
+            int found = 0;
+            for (int i = 0; i < total; i++) {
+                if (strcmp(mochila[i].nome, nome) == 0) {
+                    found = 1;
+                    for (int j = i; j < total - 1; j++)
+                        mochila[j] = mochila[j + 1];
+                    total--;
+                    printf("Item removido!\n");
+                    break;
+                }
+            }
+            if (!found) printf("Item não encontrado!\n");
+        }
+
+        else if (opcao == 3) {
+            if (total == 0) {
+                printf("Mochila vazia!\n");
+            } else {
+                printf("\n=== ITENS DA MOCHILA ===\n");
+                for (int i = 0; i < total; i++) {
+                    printf("%s | %s | %d\n",
+                           mochila[i].nome,
+                           mochila[i].tipo,
+                           mochila[i].quantidade);
+                }
+            }
+        }
+
+        else if (opcao == 4) {
+            buscarItem(mochila, total);
+        }
+
+    } while (opcao != 0);
+
+    return 0;
+}
